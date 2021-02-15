@@ -222,8 +222,8 @@ void setupServer(AsyncWebServer* server){
 		String path = "/";
 		if (__imgName.endsWith(".gif")) {
 		  __NEXT_MODE = __MODE_GIF;
-		} else if (__imgName.endsWith(".png")) {
-		  __NEXT_MODE = __MODE_PNG;
+		} else if (__imgName.endsWith(".jpg")) {
+		  __NEXT_MODE = __MODE_JPG;
 		}
 	  }
 	  __MODE_STOPED_FLAG = false;
@@ -244,7 +244,7 @@ void setupServer(AsyncWebServer* server){
 	  //Check if parameter exists (Compatibility)
 	  if (request->hasArg("speed"))
 		__SPEED__ = request->arg("speed").toInt();
-	  __NEXT_MODE = __MODE_PNG_PLAY;
+	  __NEXT_MODE = __MODE_JPG_PLAY;
 	  request->send(200, "text/plain", "ack");
 	}).setFilter(ON_STA_FILTER);
 
@@ -287,140 +287,6 @@ void setupServer(AsyncWebServer* server){
 	server->onNotFound([](AsyncWebServerRequest *request) {
 	  request->send(404);
 	});
-
-//	server->onNotFound123([](AsyncWebServerRequest * request) {
-//
-//	  String pathOnNotFound=request->url();
-//
-///*
-//	  Serial.printf("NOT_FOUND: ");
-//	  if (request->method() == HTTP_GET)
-//		Serial.printf("GET");
-//	  else if (request->method() == HTTP_POST)
-//		Serial.printf("POST");
-//	  else if (request->method() == HTTP_DELETE)
-//		Serial.printf("DELETE");
-//	  else if (request->method() == HTTP_PUT)
-//		Serial.printf("PUT");
-//	  else if (request->method() == HTTP_PATCH)
-//		Serial.printf("PATCH");
-//	  else if (request->method() == HTTP_HEAD)
-//		Serial.printf("HEAD");
-//	  else if (request->method() == HTTP_OPTIONS)
-//		Serial.printf("OPTIONS");
-//	  else
-//		Serial.printf("UNKNOWN");
-//	  Serial.printf(" http://%s%s\n", request->host().c_str(), request->url().c_str());
-//*/
-//
-//	  /*
-//	  if (request->contentLength()) {
-//		Serial.printf("_CONTENT_TYPE: %s\n", request->contentType().c_str());
-//		Serial.printf("_CONTENT_LENGTH: %u\n", request->contentLength());
-//	  }
-//
-//	  int headers = request->headers();
-//	  int i;
-//	  for (i = 0; i < headers; i++) {
-//		AsyncWebHeader* h = request->getHeader(i);
-//		Serial.printf("_HEADER[%s]: %s\n", h->name().c_str(), h->value().c_str());
-//	  }
-//
-//	  int params = request->params();
-//	  for (i = 0; i < params; i++) {
-//		AsyncWebParameter* p = request->getParam(i);
-//		if (p->isFile()) {
-//		  Serial.printf("_FILE[%s]: %s, size: %u\n", p->name().c_str(), p->value().c_str(), p->size());
-//		} else if (p->isPost()) {
-//		  Serial.printf("_POST[%s]: %s\n", p->name().c_str(), p->value().c_str());
-//		} else {
-//		  Serial.printf("_GET[%s]: %s\n", p->name().c_str(), p->value().c_str());
-//		}
-//	  }
-//*/
-//
-//	  String dataType;
-//	  if(pathOnNotFound.endsWith(".png")) dataType = "image/png";
-//	  else if(pathOnNotFound.endsWith(".gif")) dataType = "image/gif";
-//	  else if(pathOnNotFound.endsWith(".jpg")) dataType = "image/jpeg";
-//
-//	  if ( dataType.length() > 0 ){
-//		if ( NULL == queueHandle ){
-//		  queueHandle = xQueueCreate(
-//		  /* The number of items the queue can hold. */
-//			10,
-//		  /* Size of each item is big enough to hold only a
-//		  pointer. */
-//			sizeof( request ) );
-//		  if ( queueHandle == NULL ){
-//			/* One or more queues were not created successfully as there was not enough
-//			heap memory available.  Handle the error here.  Queues can also be created
-//			statically. */
-//			Serial.printf("\nUnable to create Queue (\n");
-//		  }
-//		} else {
-//		  notFoundRequestItem* _itm = new notFoundRequestItem( request );
-//		  notFoundRequests.push_back(_itm);
-//		  /* Send the address of xMessage to the queue created to hold 10    pointers. */
-//		  xQueueSend( /* The handle of the queue. */
-//			queueHandle,
-//		  /* The address of the variable that holds the address of xMessage.
-//		  sizeof( &xMessage ) bytes are copied from here into the queue. As the
-//		  variable holds the address of xMessage it is the address of xMessage
-//		  that is copied into the queue. */
-//			( void * ) _itm,
-//			( TickType_t ) 0 );
-//		}
-//		if ( NULL == imgSenderTaskHandle ) {
-//		  xTaskCreate(&imgSenderTask, "imgSenderTask", 2048, NULL, 5, &imgSenderTaskHandle);
-//		  if ( NULL == imgSenderTaskHandle ) {
-//			Serial.printf("\nUnable to start imgSenderTask (\n");
-//		  }
-//		}
-//	  }
-//
-////	  if (SPIFFS.exists(pathOnNotFound)) {
-////		request->send(SPIFFS, pathOnNotFound, dataType, download);
-////		SERIAL.printf("Sent %s, as %s\r\n", pathOnNotFound.c_str(), dataType.c_str());
-//
-////vTaskDelay(500/portTICK_PERIOD_MS);
-///*
-//		AsyncWebServerResponse *response = request->beginChunkedResponse(dataType, [](uint8_t *buffer, size_t maxLen, size_t index) -> size_t {
-//		  //Write up to "maxLen" bytes into "buffer" and return the amount written.
-//		  //index equals the amount of bytes that have been already sent
-//		  //You will be asked for more data until 0 is returned
-//		  //Keep in mind that you can not delay or yield waiting for more data!
-//		  if (!index && SPIFFS.exists(pathOnNotFound)) {
-//			spiFileOnNotFound = SPIFFS.open(pathOnNotFound, "r");
-//			dataLeftSpiFileOnNotFound = spiFileOnNotFound.size();
-//			Serial.printf("Sending %s, as %s\r\n", pathOnNotFound.c_str(), dataType.c_str());
-//			if (!spiFileOnNotFound) {
-//			  Serial.println("There was an error opening the file for writing");
-//			  return 0;
-//			}
-//		  }
-//
-////		  char buf[1024];
-//		  if (dataLeftSpiFileOnNotFound > 0) {
-//			feedTheDog();
-//			int len = std::min((int)maxLen, dataLeftSpiFileOnNotFound);
-//			if ( index >= 0 ) spiFileOnNotFound.seek(index);
-//			int len1 = spiFileOnNotFound.read(buffer, len);
-//			if ( len != len1 )
-//			  Serial.printf("\n[!WARN!]: len not equals\n");
-////			client.write((const char*)buf, len);
-//			dataLeftSpiFileOnNotFound -= len;
-//			return len;
-//		  } else {
-//			Serial.printf("!!Done sending %s, as %s\r\n", pathOnNotFound.c_str(), dataType.c_str());
-//		    if ( spiFileOnNotFound )
-//				spiFileOnNotFound.close();
-//			return 0;
-//		  }
-//		});
-//		request->send(response);
-//		*/
-//	});
 
 // Управление играми: нажата кнопка: 0 - верх, 1 - право, 2 - низ, 3 - лево, 4 - не нажата
 	server->on("/up", HTTP_POST, [](AsyncWebServerRequest *request) {
@@ -560,8 +426,8 @@ void setupServer(AsyncWebServer* server){
 //		Serial.println(__files[i]);
 //		arr.add(__files[i]);
 //	  }
-	  pngDrawer.getConfig(response);
-//	  serializeJson(pngDrawer.getConfig(), *response);
+	  jpgDrawer.getConfig(response);
+//	  serializeJson(jpgDrawer.getConfig(), *response);
 
 	  response->setCode(200);
 	  request->send(response);
@@ -737,10 +603,10 @@ static void handle_update_progress_cb(AsyncWebServerRequest *request, String fil
       __MEDIA_MODE = __MODE_GIF;
       path = __GIFS_FOLDER + "/";
     } else
-    if ( filename.endsWith(".png") ){
+    if ( filename.endsWith(".jpg") ){
       __UPLOADING_MEDIA_FLAG = true;
-      __MEDIA_MODE = __MODE_PNG;
-      path = __PNGS_FOLDER + "/";
+      __MEDIA_MODE = __MODE_JPG;
+      path = __JPGS_FOLDER + "/";
     } else
       __UPLOADING_MEDIA_FLAG = false;
     if ( !SPIFFS.exists(String(path + filename).c_str()) ) {

@@ -2,11 +2,11 @@
 // By Marc MERLIN <marc_soft@merlins.org>
 // Contains code (c) Adafruit, license BSD
 
-// LittleFS has higher priority than SPIFFS
-#define USE_LITTLEFS    false
-#define USE_SPIFFS      true
-
 #define ESP32
+// LittleFS has higher priority than SPIFFS
+#define USE_LITTLEFS    FALSE
+#undef USE_LITTLEFS
+#define USE_SPIFFS      TRUE
 #define CONFIG_ASYNC_TCP_RUNNING_CORE 1
 #define CONFIG_ASYNC_TCP_USE_WDT 0
 #define ESP_DRD_USE_SPIFFS
@@ -46,116 +46,6 @@
 unsigned long check_wifi = 30000;
 
 //bool wifi_connected = false;
-
-
-/*
-int load_png_fs(const char *url, double scale = 1.0){
-  pngle_t *pngle = pngle_new();
-  pngle_set_draw_callback(pngle, pngle_on_draw);
-  g_scale = scale; // XXX:
-
-//  size_t* z = NULL;
-  char buf[1024];// = new char(1024);
-  size_t remain = 0;
-  int len;
-
-  File file = SPIFFS.open(url, "r");
-  if (!file) {
-	Serial.println("Error opening file for reading");
-  } else {
-	int s = file.size();
-//	char *buf = new char(s);
-	int bytesReaded = file.read(reinterpret_cast<uint8_t *>(buf), s);//print("TEST SPIFFS");
-
-	len = fread(buf + remain, 1, sizeof(buf) - remain, reinterpret_cast<FILE *>(&file));
-	if (len <= 0) {
-	  printf("EOF\n");
-//	  break;
-	}
-
-	int fed = pngle_feed(pngle, buf, remain + len);
-	if (fed < 0) {
-//	  if (argc > 1) fprintf(stderr, "%s: ", argv[1]);
-	  fprintf(stderr, "ERROR; %s\n", pngle_error(pngle));
-	  return -1;
-	}
-
-	remain = remain + len - fed;
-	if (remain > 0) memmove(buf, buf + fed, remain);
-
-	if (bytesReaded > s) {
-	  Serial.println("File was Readed");
-	  Serial.println(bytesReaded);
-	  return s;
-	} else {
-	  Serial.println("File read failed");
-	}
-	file.close();
-  }
-
-
-
-//  int fed = pngle_feed(pngle, buf, *z);
-//  if (fed < 0) {
-//	cls();
-//	Serial.printf("ERROR: %s\n", pngle_error(pngle));
-////	break;
-//  } else
-//	Serial.printf("Should be ok): %s\n", fed);
-
-  pngle_destroy(pngle);
-}
-
-void load_png(const char *url, double scale = 1.0)
-{
-  HTTPClient http;
-
-  http.begin(url);
-
-  int httpCode = http.GET();
-  if (httpCode != HTTP_CODE_OK) {
-	Serial.printf("HTTP ERROR: %d\n", httpCode);
-	http.end();
-	return ;
-  }
-
-  WiFiClient *stream = http.getStreamPtr();
-
-  pngle_t *pngle = pngle_new();
-  pngle_set_draw_callback(pngle, pngle_on_draw);
-  g_scale = scale; // XXX:
-
-  uint8_t buf[2048];
-  int remain = 0;
-  while (http.connected()) {
-	size_t size = stream->available();
-	Serial.printf("sz: %d, remain: %d\n", size, remain);
-	if (!size) { delay(1); continue; }
-
-	if (size > sizeof(buf) - remain) {
-	  size = sizeof(buf) - remain;
-	}
-
-	int len = stream->readBytes(buf + remain, size);
-	if (len > 0) {
-	  int fed = pngle_feed(pngle, buf, remain + len);
-	  if (fed < 0) {
-		cls();
-		Serial.printf("ERROR: %s\n", pngle_error(pngle));
-		break;
-	  }
-	  remain = remain + len - fed;
-	  if (remain > 0) memmove(buf, buf + fed, remain);
-	} else {
-	  delay(1);
-	}
-  }
-
-  pngle_destroy(pngle);
-
-  http.end();
-}
-*/
 
 
 
@@ -198,122 +88,25 @@ void setup() {
 	printFile(SECRETS_PATH);
 	loadConfiguration(SECRETS_PATH, config);
 	gifDrawer.setup();//start();
-	pngDrawer.setup();//start();
+	jpgDrawer.setup();//start();
   }
+  effectsDrawer.setup();
 
 //  gifDrawer.start();
-  pngDrawer.start();
-  effectsDrawer.setup();
+  // jpgDrawer.start();
+  
   for(;;){
-//	pngDrawer.load_file(SPIFFS, "/imgs/0.png");
-//	matrix->show();
+    jpgDrawer.drawFrame();
+	//jpgDrawer.load_file(SPIFFS, "/imgs/0.png");
+	matrix->show();
 //	displayStartTime_millis = now;
-//	delay(__SPEED__);
+	// delay(__SPEED__);
 //	gifDrawer.drawFrame();
-//	pngDrawer.drawFrame();
-	effectsDrawer.drawFrame();
+	
+	// effectsDrawer.drawFrame();
 	delay(33);
   }
 
-/*
-  String fname = "/trnsfrmr.png";
-  for(;;){
-	load_file(SPIFFS, "/1.png");
-	delay(5000);
-	load_file(SPIFFS, "/2.png");
-	delay(5000);
-	load_file(SPIFFS, "/3.png");
-	delay(5000);
-	load_file(SPIFFS, "/4.png");
-	delay(5000);
-	load_file(SPIFFS, "/5.png");
-	delay(5000);
-  }
-//  load_png_fs(fname.c_str(), 1);
-	File fp = SPIFFS.open(fname, "r"); //fopen(argv[0], "rb");
-	if (fp == NULL) {
-	  Serial.printf("%s: %s\n", fname.c_str(), strerror(errno));
-
-	} else {
-//	  char buf[1024];
-	  size_t remain = 0;
-	  int len;
-
-	  pngle_t *pngle = pngle_new();
-
-//	  pngle_set_init_callback(pngle, init_screen);
-//	  pngle_set_draw_callback(pngle, draw_pixel);
-//	  pngle_set_done_callback(pngle, flush_screen);
-//
-//	  pngle_set_display_gamma(pngle, display_gamma);
-//	  pngle_t *pngle = pngle_new();
-	  pngle_set_draw_callback(pngle, pngle_on_draw);
-	  g_scale = 1; // XXX:
-
-//	  file = fopen(fname, "r");
-//	  if(file != NULL) {
-//		fseek(file, 0, SEEK_END);
-	  int file_size = fp.size();//ftell(file);
-//		fseek(file, 0, SEEK_SET);
-//		sprintf(cont_len, "%d", file_size);
-	  Serial.printf("File size: %d Bytes\n", file_size);
-
-//		printf("content-length %s\n", cont_len);
-
-	  uint8_t *file_buf = (uint8_t *) malloc(file_size);
-	  if (file_buf == NULL) {
-		Serial.printf("Failed to allocate memory\n");
-
-	  }
-	  int bytes_read = fp.read(file_buf, file_size);//, 1, file);
-	  int fed = pngle_feed(pngle, file_buf, remain + len);
-	  if (fed < 0) {
-//		if (argc > 1) fprintf(stderr, "%s: ", argv[1]);
-		Serial.printf("ERROR; %s\n", pngle_error(pngle));
-//		return -1;
-	  }
-//		std::string l_output(file_buf,file_size);
-//		l_output = mspUtils::trim(l_output);
-	  Serial.printf("output:\n");
-	  Serial.printf("%s\n", file_buf);
-	  Serial.printf("#####\n");
-
-	  fp.close();
-	}
-	  //  matrix->show();
-	  for(;;);
-	  */
-//	  } else {
-//		printf("Failed to open file for sending\n");
-//	  }
-
-//	  while (!feof(fp)) {
-//	  do{
-//		if (remain >= sizeof(buf)) {
-////		  if (argc > 1) fprintf(stderr, "%s: ", argv[1]);
-//		  Serial.printf("Buffer exceeded\n");
-////		  return -1;
-//		}
-//
-//		len = fread(buf + remain, 1, sizeof(buf) - remain, fp);
-//		if (len <= 0) {
-//		  //printf("EOF\n");
-//		  break;
-//		}
-//
-//		int fed = pngle_feed(pngle, buf, remain + len);
-//		if (fed < 0) {
-//		  if (argc > 1) fprintf(stderr, "%s: ", argv[1]);
-//		  fprintf(stderr, "ERROR; %s\n", pngle_error(pngle));
-//		  return -1;
-//		}
-//
-//		remain = remain + len - fed;
-//		if (remain > 0) memmove(buf, buf + fed, remain);
-//	  }
-//
-//	  if (fp != stdin) fclose(fp);
-//	}
 
 
 
@@ -417,10 +210,10 @@ data[name2] = tmp2[name2];//serialized(buf);
   __MODES_FNCS_.insert({__MODE_GIF_PLAY, (AuroraDrawable*)&gifDrawer});
 //  __MODES_FNCS_.push_back((funcPtrInfo){ "JPG", __FNC_PTR_FLG_REDRAW,     &__FNC_MODE_JPG });
 //  __MODES_FNCS_.insert({__MODE_JPG, (AuroraDrawable*)&jpgDrawer});
-  __MODES_FNCS_.insert({__MODE_PNG, (AuroraDrawable*)&pngDrawer});
+  __MODES_FNCS_.insert({__MODE_JPG, (AuroraDrawable*)&jpgDrawer});
 //  __MODES_FNCS_.push_back((funcPtrInfo){ "JPG_PLAY", __FNC_PTR_FLG_REDRAW,&__FNC_MODE_JPG_PLAY });
 //  __MODES_FNCS_.insert({__MODE_JPG_PLAY, (AuroraDrawable*)&jpgDrawer});
-  __MODES_FNCS_.insert({__MODE_PNG_PLAY, (AuroraDrawable*)&pngDrawer});
+  __MODES_FNCS_.insert({__MODE_JPG_PLAY, (AuroraDrawable*)&jpgDrawer});
 //  __MODES_FNCS_.push_back((funcPtrInfo){ "EFFECTS", __FNC_PTR_FLG_REDRAW, &__FNC_MODE_EFFECTS });
   __MODES_FNCS_.insert({__MODE_EFFECTS, (AuroraDrawable*)&effectsDrawer});
 //  __MODES_FNCS_.push_back((funcPtrInfo){ "CLOCK", __FNC_PTR_FLG_NONE, &__FNC_MODE_CLOCK });

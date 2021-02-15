@@ -68,7 +68,7 @@ bool __SERVER_STARTED = false;
 
 
 String __GIFS_FOLDER = "/gifs";
-String __PNGS_FOLDER = "/imgs";
+String __JPGS_FOLDER = "/imgs";
 
 volatile uint16_t __SPEED__ = 128; // скорость анимаций ( точнее - delay() после отрисовки очередного кадра, или скорость игр в демо режиме (мс)
 volatile uint16_t __SPEED_MAX__ = 2048;
@@ -146,8 +146,8 @@ float matrix_gamma = 1; // higher number is darker, needed for Neomatrix more th
 #define __MODE_GAME     3
 #define __MODE_GIF      4
 #define __MODE_GIF_PLAY 5
-#define __MODE_PNG      6
-#define __MODE_PNG_PLAY 7
+#define __MODE_JPG      6
+#define __MODE_JPG_PLAY 7
 #define __MODE_EFFECTS  8
 #define __MODE_CLOCK    9
 #define __MODE_DRAW     10

@@ -8,10 +8,10 @@
 
 #include "media/GifDrawer.h"
 GifDrawer gifDrawer;
-//#include "media/JpgDrawer.h"
-//JpgDrawer jpgDrawer;
-#include "media/PngDrawer.h"
-PngDrawer pngDrawer;
+#include "media/JpgDrawer.h"
+JpgDrawer jpgDrawer;
+// #include "media/PngDrawer.h"
+// PngDrawer pngDrawer;
 #include "media/TextDrawer.h"
 TextDrawer textDrawer;
 #include "effects/EffectsHelper.h"

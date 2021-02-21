@@ -165,12 +165,17 @@ public:
 	_flags.wait = false;
   }
 
-  char* getConfig(AsyncResponseStream* strm) override {
-	return vectorToJsonArray(static_cast<mediaTypeInfo* const>(&animations), (const char*)&"gifsList", strm);
+  std::stringstream* getConfigJson() override {
+	std::stringstream* res = new std::stringstream();
+	// Serial.printf("\nMedia Ext: %s, path: %s, conunt %d:\n", info->ext, info->path, info->arr.size());
+	*res << "\"gifsList\":[";
+	for ( int i = 0; i < animations.arr.size(); i++ ){
+	//   Serial.printf("\nItem[%d]: %s\n", i, info->arr[i]->c_str());
+		*res << "\"" << animations.path << "/" << animations.arr[i]->c_str() << animations.ext << ( i == animations.arr.size()-1 ? "\"" : "\"," );
+	}
+	*res << "]";
+	return res;
   }
-  uint8_t getConfigSize() override {
-	return animations.arr.size();
-  };
 
   void start() {
 
@@ -319,12 +324,12 @@ public:
 //	OFFSETX = x;
 //	OFFSETY = y;
 
-	int returnCode = 0;/*decoder.decodeFrame();
+	int returnCode = decoder.decodeFrame();
 	if(returnCode < 0) {
 	  // There's an error with this GIF, go to the next one
 	  nextGIF = 1;
 	}
-*/
+
 	// we completed one pass of the GIF, print some stats
 	if(returnCode == 123){//ERROR_DONE_PARSING) {
 //#if DEBUG == 1
@@ -342,9 +347,7 @@ public:
 	}
   }
 
-  virtual ~GifDrawer() {
-
-  }
+  virtual ~GifDrawer() {};
 };
 
 #endif

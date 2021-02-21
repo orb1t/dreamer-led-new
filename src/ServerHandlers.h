@@ -408,7 +408,11 @@ void setupServer(AsyncWebServer* server){
 	  response->setCode(200);
 //	  const char* res = gifDrawer.getConfig();
 //	  const char* res =
-	    gifDrawer.getConfig(response);
+//!!!TODO:
+	    // gifDrawer.getConfig(response);
+		response->write("{");
+		response->write(gifDrawer.getConfigJson()->str().c_str());
+		response->write("}");
 //	  serializeJson(, *response);
 	  request->send(response);
 	}).setFilter(ON_STA_FILTER);
@@ -426,7 +430,12 @@ void setupServer(AsyncWebServer* server){
 //		Serial.println(__files[i]);
 //		arr.add(__files[i]);
 //	  }
-	  jpgDrawer.getConfig(response);
+//!!!TODO:
+	//   jpgDrawer.getConfig(response);
+	// *response << jpgDrawer.getConfigJson()->rdbuf();
+	response->write("{");
+	response->write(jpgDrawer.getConfigJson()->str().c_str());
+	response->write("}");
 //	  serializeJson(jpgDrawer.getConfig(), *response);
 
 	  response->setCode(200);
@@ -437,19 +446,32 @@ void setupServer(AsyncWebServer* server){
 
 	server->on("/matrix-parameters", HTTP_GET, [](AsyncWebServerRequest *request) {
 	  dumpHeap("0");
-	  const size_t capacity = JSON_ARRAY_SIZE(gamesRunner.getConfigSize() + effectsDrawer.getConfigSize()) * 2 + JSON_OBJECT_SIZE(1) * 5;
-	  DynamicJsonDocument data(capacity);
+	//   const size_t capacity = JSON_ARRAY_SIZE(gamesRunner.getConfigSize() + effectsDrawer.getConfigSize()) * 2 + JSON_OBJECT_SIZE(1) * 5;
+	//   DynamicJsonDocument data(capacity);
 //	  AsyncResponseStream *response = request->beginResponseStream("application/json");
-	  Serial.printf("\n/matrix-parameters[%d]\n", capacity);
-	  dumpHeap("1");
+	//   Serial.printf("\n/matrix-parameters[%d]\n", capacity);
+	  
 
-	  data["width"] = MX_WIDTH;
-	  data["height"] = MX_HEIGHT;
+	  std::stringstream* res = new std::stringstream();
+	//   Stream res;
+	//   res.
 
-	  data["speed"] = __SPEED__;
-	  data["speedMax"] = __SPEED_MAX__;
-	  data["brightness"] = FastLED.getBrightness();
-	  serializeJson(data, Serial);
+	  *res << "{\"width\":" << MX_WIDTH \
+	  	<< ",\"height\":" << MX_HEIGHT \
+		<< ",\"speed\":" << __SPEED__ \
+		<< ",\"speedMax\":" << __SPEED_MAX__ \
+		<< ",\"brightness\":" << 8 \
+		<< "," << effectsDrawer.getConfigJson()->rdbuf() \
+		<< "," << gamesRunner.getConfigJson()->rdbuf() \
+	    << "}";
+
+	//   data["width"] = MX_WIDTH;
+	//   data["height"] = MX_HEIGHT;
+
+	//   data["speed"] = __SPEED__;
+	//   data["speedMax"] = __SPEED_MAX__;
+	//   data["brightness"] = FastLED.getBrightness();
+	//   serializeJson(data, Serial);
 
 //	  JsonArray arr = data.createNestedArray("effects");
 //	  arr.set(((DynamicJsonDocument)effectsDrawer.getConfig()).as<JsonArray>());
@@ -493,9 +515,14 @@ void setupServer(AsyncWebServer* server){
 //	  request->send(response);
 //	  data.clear();
 
-	  String response;
-	  serializeJson(data, response);
-	  request->send(200, "application/json", response);
+	//   String response;
+	//   serializeJson(data, response);
+	// request->send(res, "application/json", res->str().length() );
+	dumpHeap("1");
+	std::string sss = res->str();
+	dumpHeap("2");
+	// sss << "zxc";
+	  request->send(200, "application/json", sss.c_str());
 	}).setFilter(ON_STA_FILTER);
 
 	server->on("/running-text", HTTP_POST, [](AsyncWebServerRequest *request) {

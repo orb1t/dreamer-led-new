@@ -37,9 +37,10 @@
 #include "system/OTAHelper.h"
 #include "system/SPIFFS_functions.h"
 #include "globalModes.h"
-#include "../.pio/libdeps/esp32dev/ArduinoJson/src/ArduinoJson/Misc/SerializedValue.hpp"
+// #include "../.pio/libdeps/esp32dev/ArduinoJson/src/ArduinoJson/Misc/SerializedValue.hpp"
 
-
+#include <sstream>
+#include <iostream>
 
 
 
@@ -82,54 +83,38 @@ void setup() {
 //    }
   } else {
 #if DEBUG == 1
-	listFiles(0);
+	  listFiles(0);
 #endif
-	updateFW();
-	printFile(SECRETS_PATH);
-	loadConfiguration(SECRETS_PATH, config);
-	gifDrawer.setup();//start();
-	jpgDrawer.setup();//start();
+    updateFW();
+    printFile(SECRETS_PATH);
+    loadConfiguration(SECRETS_PATH, config);
+    gifDrawer.setup();//start();
+    jpgDrawer.setup();//start();
   }
   effectsDrawer.setup();
-
-//  gifDrawer.start();
-  // jpgDrawer.start();
-  
-  for(;;){
-    jpgDrawer.drawFrame();
-	//jpgDrawer.load_file(SPIFFS, "/imgs/0.png");
-	matrix->show();
-//	displayStartTime_millis = now;
-	// delay(__SPEED__);
-//	gifDrawer.drawFrame();
-	
-	// effectsDrawer.drawFrame();
-	delay(33);
-  }
-
-
-
-
-//  WiFi.begin("Keenetic-1933", "sMTVCwBP");
-//  while (WiFi.status() != WL_CONNECTED) {
-//	delay(100);
-//  }
-//  Serial.printf("WiFi connected.\n");
-//  load_png("http://dev4.evolv.redwerk.com/png/s09n3p02.png");
-//  load_png("https://raw.githubusercontent.com/kikuchan/pngle/master/tests/pngsuite/PngSuite.png");
-//  load_png_fs("/trnsfrmr.png");
-//  matrix->show();
-//  for(;;);
-
-
-
-//  setupMedia();
-//  setupGames();
   gamesRunner.setup();
-//  setupEffects(matrixleds);
-  effectsDrawer.setup();
-//  jpgDrawer.filename = "/imgs/14_.jpg";
-//  setupModes();
+
+std::cout << effectsDrawer.getConfigJson()->rdbuf() << std::endl;
+std::cout << gifDrawer.getConfigJson()->rdbuf() << std::endl;
+std::cout << jpgDrawer.getConfigJson()->rdbuf() << std::endl;
+std::cout << gamesRunner.getConfigJson()->rdbuf() << std::endl;
+
+
+// printf("effectsDrawer.config:\n%s\n", effectsDrawer.getConfig(NULL));
+ 
+//   for(;;){
+//     jpgDrawer.drawFrame();
+// 	//jpgDrawer.load_file(SPIFFS, "/imgs/0.png");
+// 	matrix->show();
+// //	displayStartTime_millis = now;
+// 	// delay(__SPEED__);
+// //	gifDrawer.drawFrame();
+	
+// 	// effectsDrawer.drawFrame();
+// 	delay(33);
+//   }
+
+
   Serial.println("\r\nInitialisation done.");
   led.off();
 
@@ -223,7 +208,7 @@ data[name2] = tmp2[name2];//serialized(buf);
 
   //    __LAST_MODE = __MODE_NULL;
   __CURRENT_MODE = __MODE_NULL;//__MODE_GIF_PLAY;//
-  __NEXT_MODE = __MODE_GIF;//__MODE_EFFECTS;//__MODE_GAME;//__MODE_NULL;//__MODE_EFFECTS;
+  __NEXT_MODE = __MODE_JPG_PLAY;//__MODE_GIF;// __MODE_GIF;//__MODE_EFFECTS;//__MODE_GAME;//__MODE_NULL;//__MODE_EFFECTS;
   __CURRENT_MODE_FUNC = NULL;//__MODES_FNCS_[__CURRENT_MODE];
   __MODE_STOPING_FLAG = false;
   __MODE_STOPED_FLAG = false;

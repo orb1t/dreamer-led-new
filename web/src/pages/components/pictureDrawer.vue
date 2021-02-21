@@ -197,16 +197,16 @@ export default {
         },
         redrawMatrix(values) {
           let index = 0;
-          console.log(`MATRIX: ${JSON.stringify(this.matrix)}`);
+        //   console.log(`MATRIX: ${JSON.stringify(this.matrix)}`);
           let _w = this.matrix.length;
           let _h = this.matrix[1].length;
-          console.log(`width: ${_w}, height: ${_h}`);
+        //   console.log(`width: ${_w}, height: ${_h}`);
           let _idx = 0;
           this.matrix.forEach((row, i) => {
               row.forEach((col, j) => {
                 let odd = i % 2 != 0;
                 _idx = ( ( odd ? i + 1 : i ) * 3 * _w + ( odd ? -3 : 0 ) ) + ( ( odd ? -j : j ) * 3 );
-                console.log(`i: ${i}, j: ${j}, index: ${index}, _idx: ${_idx}`);
+                // console.log(`i: ${i}, j: ${j}, index: ${index}, _idx: ${_idx}`);
                 let r = values[_idx++];
                 let g = values[_idx++];
                 let b = values[_idx++];

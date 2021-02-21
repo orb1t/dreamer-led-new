@@ -127,7 +127,7 @@ export default {
                       fr.readAsArrayBuffer(event.data);
                       fr.addEventListener("loadend", ev => {
                         let arr = new Uint8Array(ev.target.result);
-                        console.log(arr);
+                        // console.log(arr);
                         store.setMatrixContent(arr);
                       });
                     }

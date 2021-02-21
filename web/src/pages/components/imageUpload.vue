@@ -15,7 +15,7 @@
                                 type="file"
                                 hidden
                                 @change="upload"
-                                accept="image/gif,image/png"
+                                accept="image/gif,image/jpg"
                             />
                         </label >
                     </div>

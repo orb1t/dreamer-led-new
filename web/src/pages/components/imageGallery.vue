@@ -161,7 +161,7 @@ export default {
             }
         },
         selectSingleImage (url) {
-            let [fileName] = url.match(/[\d\w]+\.(png|gif)$/) || [];
+            let [fileName] = url.match(/[\d\w]+\.(jpg|gif)$/) || [];
 
             return fetch(url)
                 .then(e => e.blob())

@@ -13,7 +13,7 @@
 #include "SPIFFS.h"
 #include "globals.h"
 
-#include <ArduinoJson.h>
+// #include <ArduinoJson.h>
 
 template<typename Base, typename T>
 inline bool instanceof(const T *) {

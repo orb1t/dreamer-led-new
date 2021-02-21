@@ -34,7 +34,7 @@ class Services {
       const reader = response.body.getReader();
       return reader.read();
     }).then(({ value }) => {
-      console.log(value);
+//      console.log(value);
       globalStore.setMatrixContent(value);
     });
   }

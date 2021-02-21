@@ -109,12 +109,17 @@ public:
 //   uint8_t getConfigSize() override {
 // 	return images.arr.size();
 //   };
-char* getConfig(AsyncResponseStream* strm) override {
-	return vectorToJsonArray(static_cast<mediaTypeInfo* const>(&images), (const char*)&"imageList", strm);
+std::stringstream* getConfigJson() override {
+	std::stringstream* res = new std::stringstream();
+	// Serial.printf("\nMedia Ext: %s, path: %s, conunt %d:\n", info->ext, info->path, info->arr.size());
+	*res << "\"imageList\":[";
+	for ( int i = 0; i < images.arr.size(); i++ ){
+	//   Serial.printf("\nItem[%d]: %s\n", i, info->arr[i]->c_str());
+		*res << "\"" << images.path << "/" << images.arr[i]->c_str() << images.ext << ( i == images.arr.size()-1 ? "\"" : "\"," );
+	}
+	*res << "]";
+	return res;
   }
-  uint8_t getConfigSize() override {
-	return images.arr.size();
-  };
 
 
   void start() {
@@ -175,11 +180,10 @@ char* getConfig(AsyncResponseStream* strm) override {
 //      delay(__SPEED__);
 		nextJpg = 0;
 	  }
-	}
+	};
 
-  virtual ~JpgDrawer() {
+  virtual ~JpgDrawer() {  };
 
-  }
 };
 
 

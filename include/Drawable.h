@@ -25,20 +25,15 @@
 
 
 #include "../.pio/libdeps/esp32dev/Framebuffer GFX/Framebuffer_GFX.h"
-#include <ArduinoJson.h>
+// #include <ArduinoJson.h>
 
 
-
-class AuroraDrawable{
+class AuroraDrawable {
 protected:
   Framebuffer_GFX *_framebuffer;
   drawableFlags _flags;
-//  std::vector<AuroraDrawable*> items;
 public:
-  virtual std::vector<AuroraDrawable *> getItems(){  };
-
-  virtual char* getConfig( AsyncResponseStream* strm ){};
-  virtual uint8_t getConfigSize(){};
+  virtual std::stringstream* getConfigJson(){};
 
   bool needStart = true;
   uint8_t speedDivider = 10;
